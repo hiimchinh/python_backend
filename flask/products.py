@@ -4,7 +4,7 @@ from bson import ObjectId
 
 products_bp = Blueprint('products', __name__)
 
-mongo_url = 'mongodb+srv://chinh:575xQvf7lGNFuGFl@cluster-01.kz6vr.mongodb.net/'
+mongo_url = 'mongodb://mongo:27017/'
 client = MongoClient(mongo_url)
 db = client.crud
 

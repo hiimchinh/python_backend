@@ -4,7 +4,7 @@ from bson import ObjectId
 
 users_bp = Blueprint('users', __name__)
 
-mongo_url = 'mongodb+srv://chinh:575xQvf7lGNFuGFl@cluster-01.kz6vr.mongodb.net/'
+mongo_url = 'mongodb://mongo:27017/'
 client = MongoClient(mongo_url)
 db = client.crud
 
@@ -17,7 +17,7 @@ def get_user(id):
     collection = db.users
     user = collection.find_one({'_id': ObjectId(id)})
     if user is None:
-        return "User not found", 404
+        return jsonify({"message": "User not found"}), 404
     user['_id'] = str(user['_id'])
     return jsonify(user)
 
