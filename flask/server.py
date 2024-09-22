@@ -5,7 +5,10 @@ from flask import Flask
 from pymongo import MongoClient
 from products import products_bp
 from users import users_bp
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(products_bp)
 app.register_blueprint(users_bp)
 mongo_url = 'mongodb://mongo:27017/'
