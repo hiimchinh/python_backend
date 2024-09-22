@@ -5,8 +5,10 @@ from flask import Flask, jsonify
 from pymongo import MongoClient
 from flask import request
 from bson import ObjectId
+from products import products_bp
 
 app = Flask(__name__)
+app.register_blueprint(products_bp)
 mongo_url = 'mongodb+srv://chinh:575xQvf7lGNFuGFl@cluster-01.kz6vr.mongodb.net/'
 
 client = MongoClient(mongo_url)
