@@ -58,7 +58,10 @@ def update_product(id):
 @products_bp.route('/products/<id>', methods=['DELETE'])
 def delete_product(id):
     collection = db.products
+    product = collection.find_one({'_id': ObjectId(id)})
+    if product is None:
+        return jsonify({"message": "Product not found"}), 404
     result = collection.delete_one({'_id': ObjectId(id)})
     if result.deleted_count == 0:
-        return jsonify({"message": "Product not found"}), 404
+        return jsonify({"message": "Product deleted failed"}), 500
     return jsonify({"message": "Product deleted successfully"}), 200
