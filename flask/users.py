@@ -34,6 +34,9 @@ def create_user():
     collection = db.users
     request_data = request.json
     user = sanitize_request_data(request_data)
+    exist_user = collection.find_one({"email": user["email"]})
+    if exist_user:
+        return jsonify({"message": "User already exists"}), 400
     result = collection.insert_one(user)
     if result.inserted_id is None:
         return jsonify({"message": "User created failed"}), 500
@@ -45,6 +48,8 @@ def update_user(id):
     collection = db.users
     request_data = request.json
     user = sanitize_request_data(request_data)
+    if not collection.find_one({"_id": ObjectId(id)}):
+        return jsonify({"message": "User not found"}), 404
     result = collection.update_one({'_id': ObjectId(id)}, {'$set': user})
     if result.modified_count == 0:
         return jsonify({"message": "User updated failed"}), 500

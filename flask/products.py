@@ -34,6 +34,9 @@ def create_product():
     collection = db.products
     request_data = request.json
     product = sanitize_product_data(request_data)
+    exist_product = collection.find_one({"name": product["name"]})
+    if exist_product:
+        return jsonify({"message": "Product already exists"}), 400
     result = collection.insert_one(product)
     if result.inserted_id is None:
         return jsonify({"message": "Product creation failed"}), 500
@@ -45,6 +48,8 @@ def update_product(id):
     collection = db.products
     request_data = request.json
     product = sanitize_product_data(request_data)
+    if not collection.find_one({"_id": ObjectId(id)}):
+        return jsonify({"message": "Product not found"}), 404
     result = collection.update_one({'_id': ObjectId(id)}, {'$set': product})
     if result.modified_count == 0:
         return jsonify({"message": "Product update failed"}), 500
