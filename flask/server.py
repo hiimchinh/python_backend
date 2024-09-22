@@ -47,9 +47,10 @@ def create_user():
     request_data = request.json
     user = sanitize_request_data(request_data)
     result = collection.insert_one(user)
-    new_user = collection.find_one({'_id': result.inserted_id})
-    new_user['_id'] = str(new_user['_id'])
-    return jsonify(new_user)
+    if result.inserted_id is None:
+        return jsonify({"message": "User created failed"}), 500
+    inserted_id = str(result.inserted_id)
+    return jsonify({"_id": inserted_id, "message": "User created successfully"}), 201
 
 @app.route('/users/<id>', methods=['PUT'])
 def update_user(id):
@@ -57,7 +58,9 @@ def update_user(id):
     request_data = request.json
     user = sanitize_request_data(request_data)
     result = collection.update_one({'_id': ObjectId(id)}, {'$set': user})
-    return jsonify(result)
+    if result.modified_count == 0:
+        return jsonify({"message": "User updated failed"}), 500
+    return jsonify({"message": "User updated successfully"}), 200
 
 @app.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
